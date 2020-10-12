@@ -9,7 +9,9 @@ import org.springframework.beans.factory.annotation.Value;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.temporal.TemporalUnit;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 
 public class JwtTokenProvider {
@@ -35,12 +37,14 @@ public class JwtTokenProvider {
     }
 
     /**
-     * 
+     *
      * @param userPrincipal
      * @return
      */
     private String[] getClaimsFromUser(UserPrincipal userPrincipal) {
-        return null;
+        List<String> authorities = new ArrayList<>();
+        userPrincipal.getAuthorities().forEach( a-> authorities.add(a.getAuthority()));
+        return authorities.toArray(new String[0]);
     }
 
 
