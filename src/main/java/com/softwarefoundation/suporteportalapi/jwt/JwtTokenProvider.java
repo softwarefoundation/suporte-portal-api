@@ -14,4 +14,34 @@ import java.util.Date;
 
 public class JwtTokenProvider {
 
+    @Value("${jwt.secret}")
+    private String secret;
+
+    /**
+     *
+     * @param userPrincipal
+     * @return
+     */
+    public String generateJwtToken(UserPrincipal userPrincipal){
+        String[] claims = getClaimsFromUser(userPrincipal);
+
+        return JWT.create()
+                .withIssuer(SecurityConstants.GET_ARAYS_LLC)
+                .withAudience(SecurityConstants.GET_ARRAYS_ADMINISTRATION)
+                .withIssuedAt(new Date()).withSubject(userPrincipal.getUsername())
+                .withArrayClaim(SecurityConstants.AUTHORITIES, claims)
+                .withExpiresAt(new Date(Long.sum(System.currentTimeMillis(),SecurityConstants.EXPIRATION_TIME)))
+                .sign(Algorithm.HMAC512(secret.getBytes()));
+    }
+
+    /**
+     * 
+     * @param userPrincipal
+     * @return
+     */
+    private String[] getClaimsFromUser(UserPrincipal userPrincipal) {
+        return null;
+    }
+
+
 }
