@@ -7,9 +7,14 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.softwarefoundation.suporteportalapi.config.security.SecurityConstants;
 import com.softwarefoundation.suporteportalapi.domain.UserPrincipal;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.temporal.TemporalUnit;
@@ -88,5 +93,49 @@ public class JwtTokenProvider {
         return verifier;
     }
 
+    /**
+     *
+     * @param username
+     * @param authorities
+     * @param request
+     * @return
+     */
+    public Authentication getAuthentication(String username, List<GrantedAuthority> authorities, HttpServletRequest request){
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username,null,authorities);
+        authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+        return authenticationToken;
+    }
+
+    /**
+     *
+     * @param username
+     * @param token
+     * @return
+     */
+    public boolean isTokenValido(String username, String token){
+        JWTVerifier verifier = getJwtVerifier();
+        return (username != null && !username.isEmpty()) && !isTokenExpirado(verifier,token);
+    }
+
+    /**
+     *
+     * @param verifier
+     * @param token
+     * @return
+     */
+    private boolean isTokenExpirado(JWTVerifier verifier, String token) {
+        Date expiration = verifier.verify(token).getExpiresAt();
+        return expiration.before(new Date());
+    }
+
+    /**
+     * 
+     * @param token
+     * @return
+     */
+    public String getSubject(String token){
+        JWTVerifier verifier = getJwtVerifier();
+        return verifier.verify(token).getSubject();
+    }
 
 }
