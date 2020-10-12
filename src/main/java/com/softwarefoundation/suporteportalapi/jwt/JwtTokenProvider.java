@@ -1,17 +1,23 @@
 package com.softwarefoundation.suporteportalapi.jwt;
 
 import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.softwarefoundation.suporteportalapi.config.security.SecurityConstants;
 import com.softwarefoundation.suporteportalapi.domain.UserPrincipal;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 public class JwtTokenProvider {
@@ -45,6 +51,41 @@ public class JwtTokenProvider {
         List<String> authorities = new ArrayList<>();
         userPrincipal.getAuthorities().forEach( a-> authorities.add(a.getAuthority()));
         return authorities.toArray(new String[0]);
+    }
+
+    /**
+     *
+     * @param token
+     * @return
+     */
+    public List<GrantedAuthority> getAuthorities(String token){
+        String[] claims = getClaimsFromToken(token);
+        return Arrays.stream(claims).map(SimpleGrantedAuthority::new).collect(Collectors.toList());
+    }
+
+    /**
+     *
+     * @param token
+     * @return
+     */
+    private String[] getClaimsFromToken(String token) {
+        JWTVerifier verifier = getJwtVerifier();
+        return verifier.verify(token).getClaim(SecurityConstants.AUTHORITIES).asArray(String.class);
+    }
+
+    /**
+     *
+     * @return
+     */
+    private JWTVerifier getJwtVerifier() {
+        JWTVerifier verifier;
+        try{
+            Algorithm algorithm = Algorithm.HMAC512(secret);
+            verifier = JWT.require(algorithm).withIssuer(SecurityConstants.GET_ARAYS_LLC).build();
+        }catch (Exception e){
+            throw new JWTVerificationException(SecurityConstants.TOKEN_CANNOT_BE_VERIFY);
+        }
+        return verifier;
     }
 
 
