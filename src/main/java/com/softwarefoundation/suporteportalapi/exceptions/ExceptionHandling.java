@@ -1,12 +1,22 @@
 package com.softwarefoundation.suporteportalapi.exceptions;
 
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.softwarefoundation.suporteportalapi.domain.HttpResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.LockedException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import javax.persistence.NoResultException;
+import java.io.IOException;
+import java.nio.file.AccessDeniedException;
+import java.util.Objects;
 
 @Slf4j
 @RestControllerAdvice
@@ -23,6 +33,78 @@ public class ExceptionHandling {
     @ExceptionHandler(DisabledException.class)
     private ResponseEntity<HttpResponse> accountDisabledException(){
         return createHttpResponse(HttpStatus.BAD_REQUEST, ACOUNT_DISABLED_MSG);
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<HttpResponse> badCredentialsException(BadCredentialsException exception){
+        log.error(exception.getMessage());
+        return createHttpResponse(HttpStatus.BAD_REQUEST, INCORRECT_CREDENTIALS_MSG);
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<HttpResponse> accessDeniedException(AccessDeniedException exception){
+        log.error(exception.getMessage());
+        return createHttpResponse(HttpStatus.FORBIDDEN, NOT_ENOUGH_PERMISSION_MSG);
+    }
+
+    @ExceptionHandler(LockedException.class)
+    public ResponseEntity<HttpResponse> lockedException(LockedException exception){
+        log.error(exception.getMessage());
+        return createHttpResponse(HttpStatus.UNAUTHORIZED, ACCOUNT_LOCKED_MSG);
+    }
+
+    @ExceptionHandler(TokenExpiredException.class)
+    public ResponseEntity<HttpResponse> tokenExpiredException(TokenExpiredException exception){
+        log.error(exception.getMessage());
+        return createHttpResponse(HttpStatus.UNAUTHORIZED, exception.getMessage());
+    }
+
+    @ExceptionHandler(EmailExistException.class)
+    public ResponseEntity<HttpResponse> emailNotFoundException(EmailExistException exception){
+        log.error(exception.getMessage());
+        return createHttpResponse(HttpStatus.BAD_REQUEST, exception.getMessage());
+    }
+
+    @ExceptionHandler(UsernameExistException.class)
+    public ResponseEntity<HttpResponse> userNameExistException(UsernameExistException exception){
+        log.error(exception.getMessage());
+        return createHttpResponse(HttpStatus.BAD_REQUEST, exception.getMessage());
+    }
+
+    @ExceptionHandler(EmailNotFoundException.class)
+    public ResponseEntity<HttpResponse> emailNotFoundException(EmailNotFoundException exception){
+        log.error(exception.getMessage());
+        return createHttpResponse(HttpStatus.BAD_REQUEST, exception.getMessage());
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<HttpResponse> userNotFoundException(UserNotFoundException exception){
+        log.error(exception.getMessage());
+        return createHttpResponse(HttpStatus.BAD_REQUEST, exception.getMessage());
+    }
+
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity<HttpResponse> methodNotSupportedException(HttpRequestMethodNotSupportedException exception){
+        HttpMethod supportedMethod = Objects.requireNonNull(exception.getSupportedHttpMethods()).iterator().next();
+        return createHttpResponse(HttpStatus.METHOD_NOT_ALLOWED, String.format(METHOD_IS_NOT_ALLOWED_MSG, supportedMethod));
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<HttpResponse> internalServerException(Exception exception){
+        log.error(exception.getMessage());
+        return createHttpResponse(HttpStatus.INTERNAL_SERVER_ERROR, INTERNAL_SERVER_ERROR_MSG);
+    }
+
+    @ExceptionHandler(NoResultException.class)
+    public ResponseEntity<HttpResponse> notFoundException(NoResultException exception){
+        log.error(exception.getMessage());
+        return createHttpResponse(HttpStatus.NOT_EXTENDED, exception.getMessage());
+    }
+
+    @ExceptionHandler(IOException.class)
+    public ResponseEntity<HttpResponse> notFoundException(IOException exception){
+        log.error(exception.getMessage());
+        return createHttpResponse(HttpStatus.INTERNAL_SERVER_ERROR, ERROR_PROCESSING_FILE_MSG);
     }
 
 
