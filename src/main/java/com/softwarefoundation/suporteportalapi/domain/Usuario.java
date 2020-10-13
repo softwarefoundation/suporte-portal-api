@@ -30,7 +30,7 @@ public class Usuario implements Serializable {
     @Column(name = "SOBRENOME")
     private String sobrenome;
 
-    @Column(name = "NOME")
+    @Column(name = "EMAIL")
     private String email;
 
     @Column(name = "SENHA")
