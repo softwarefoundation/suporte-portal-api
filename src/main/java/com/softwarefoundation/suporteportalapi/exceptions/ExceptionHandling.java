@@ -12,6 +12,7 @@ import org.springframework.security.authentication.LockedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.NoHandlerFoundException;
 
 import javax.persistence.NoResultException;
 import java.io.IOException;
@@ -29,6 +30,7 @@ public class ExceptionHandling {
     private static final String ACOUNT_DISABLED_MSG = "Sua conta foi desativada";
     private static final String ERROR_PROCESSING_FILE_MSG = "Erro durante o processamento do arquivo";
     private static final String NOT_ENOUGH_PERMISSION_MSG = "Você não tem permissão para acessar este recurso";
+    private static final String PAGE_NOT_FOUND_MSG = "Página não encontrada";
 
     @ExceptionHandler(DisabledException.class)
     private ResponseEntity<HttpResponse> accountDisabledException(){
@@ -81,6 +83,12 @@ public class ExceptionHandling {
     public ResponseEntity<HttpResponse> userNotFoundException(UserNotFoundException exception){
         log.error(exception.getMessage());
         return createHttpResponse(HttpStatus.BAD_REQUEST, exception.getMessage());
+    }
+
+    @ExceptionHandler(NoHandlerFoundException.class)
+    public ResponseEntity<HttpResponse> noHandlerFoundException(NoHandlerFoundException exception){
+        log.error(exception.getMessage());
+        return createHttpResponse(HttpStatus.BAD_REQUEST, PAGE_NOT_FOUND_MSG);
     }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
