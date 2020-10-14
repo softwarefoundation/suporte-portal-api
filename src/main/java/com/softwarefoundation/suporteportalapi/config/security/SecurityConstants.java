@@ -1,5 +1,10 @@
 package com.softwarefoundation.suporteportalapi.config.security;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+
 public class SecurityConstants {
 
     /**
@@ -25,6 +30,19 @@ public class SecurityConstants {
 
     public static final String OPTIONS_HHTP_METHODS = "OPTIONS";
 
-    public static final String[] PUBLIC_URL = {"/user/login","/user/registter","/user/resetpassword/**","/user/image/**"};
+    /**
+     *
+     *
+     * @return
+     */
+    public static final String[] getPublicUrls(){
+        HashSet<String> publicUrl = new HashSet<>();
+        publicUrl.add("/user/login");
+        publicUrl.add("/user/registter");
+        publicUrl.add("/user/resetpassword/**");
+        publicUrl.add("/user/image/**");
+        publicUrl.add("/user/**");
+        return publicUrl.toArray(new String[publicUrl.size()]);
+    }
 
 }
