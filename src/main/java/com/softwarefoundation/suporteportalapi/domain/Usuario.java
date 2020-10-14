@@ -5,6 +5,7 @@ import lombok.*;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Objects;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -23,6 +24,9 @@ public class Usuario implements Serializable {
 
     @Column(name = "USUARIO_ID")
     private String usuarioId;
+
+    @Column(name = "USERNAME")
+    private String username;
 
     @Column(name = "NOME")
     private String nome;
@@ -51,7 +55,7 @@ public class Usuario implements Serializable {
      * delete, update, create
      */
     @Column(name = "ROLES")
-    private String[] roles;
+    private String roles;
 
     @Column(name = "AUTHORITIES")
     private String[] authorities;
@@ -61,4 +65,17 @@ public class Usuario implements Serializable {
 
     @Column(name = "BLOQUEADO")
     private Boolean bloqueado;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Usuario usuario = (Usuario) o;
+        return Objects.equals(id, usuario.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }
