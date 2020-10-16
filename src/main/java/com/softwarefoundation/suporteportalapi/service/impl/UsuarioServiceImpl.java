@@ -33,7 +33,7 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         log.info("Pesquisando usuário por nome: {}", username);
-        Usuario usuario = usuarioRepository.findUsuarioByNome(username);
+        Usuario usuario = usuarioRepository.findUsuarioByUsername(username);
         if (usuario == null) {
             throw new UsernameNotFoundException("Usuário não encontrado pelo nome: " + username);
         } else {
@@ -78,7 +78,7 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
     }
 
     private String generatePassword() {
-        List<String> letras = Arrays.asList("A", "X", "W", "B", "O");
+        List<String> letras = Arrays.asList("0", "0", "0", "0", "0");
         StringBuilder senha = new StringBuilder();
         for (int i = 0; i < 6; i++) {
             senha.append(letras.get(new Random().nextInt(letras.size() - 1)));
@@ -98,7 +98,7 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
         Usuario usuarioByNewUsername = findByUsername(newUsername);
         Usuario usuarioByNewEmail = findByEmail(newEmail);
         if (currentUsername != null && !currentUsername.isEmpty()) {
-            Usuario currentUser = usuarioRepository.findUsuarioByNome(currentUsername);
+            Usuario currentUser = usuarioRepository.findUsuarioByUsername(currentUsername);
             if (Objects.isNull(currentUser)) {
                 throw new UserNotFoundException("Usuário não encontrado pelo nome: " + currentUsername);
             }
@@ -124,7 +124,7 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
 
     @Override
     public Usuario findByUsername(String username) {
-        return usuarioRepository.findUsuarioByNome(username);
+        return usuarioRepository.findUsuarioByUsername(username);
     }
 
     @Override
