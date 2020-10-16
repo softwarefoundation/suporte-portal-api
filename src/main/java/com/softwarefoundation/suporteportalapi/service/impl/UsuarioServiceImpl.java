@@ -41,7 +41,7 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
             usuario.setDataUltimoLogin(new Date());
             usuarioRepository.save(usuario);
             UserPrincipal userPrincipal = new UserPrincipal(usuario);
-            log.info("Usuário entrado: {}", username);
+            log.info("Usuário encontrado: {}", username);
             return userPrincipal;
         }
     }
