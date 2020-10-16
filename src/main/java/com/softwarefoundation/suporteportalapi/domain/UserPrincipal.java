@@ -28,7 +28,7 @@ public class UserPrincipal implements UserDetails {
 
     @Override
     public String getUsername() {
-        return this.usuario.getNome();
+        return this.usuario.getUsername();
     }
 
     @Override
@@ -38,7 +38,7 @@ public class UserPrincipal implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return this.usuario.getBloqueado();
+        return !this.usuario.getBloqueado();
     }
 
     @Override
