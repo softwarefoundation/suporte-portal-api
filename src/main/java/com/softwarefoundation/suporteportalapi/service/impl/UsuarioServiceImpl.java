@@ -6,6 +6,7 @@ import com.softwarefoundation.suporteportalapi.enumetarion.Role;
 import com.softwarefoundation.suporteportalapi.exceptions.UserNotFoundException;
 import com.softwarefoundation.suporteportalapi.exceptions.UsernameExistException;
 import com.softwarefoundation.suporteportalapi.repository.UsuarioRepository;
+import com.softwarefoundation.suporteportalapi.resource.LoginAttempService;
 import com.softwarefoundation.suporteportalapi.service.UsuarioService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.util.*;
+import java.util.concurrent.ExecutionException;
 
 @Slf4j
 @Service
@@ -30,13 +32,17 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
+    @Autowired
+    private LoginAttempService loginAttempService;
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        log.info("Pesquisando usuário por nome: {}", username);
+        log.info("Pesquisando username: {}", username);
         Usuario usuario = usuarioRepository.findUsuarioByUsername(username);
         if (usuario == null) {
             throw new UsernameNotFoundException("Usuário não encontrado pelo nome: " + username);
         } else {
+            validateLoginAttemp(usuario);
             usuario.setDataUltimoLoginDisplay(usuario.getDataUltimoLoginDisplay());
             usuario.setDataUltimoLogin(new Date());
             usuarioRepository.save(usuario);
@@ -45,6 +51,15 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
             return userPrincipal;
         }
     }
+
+    private void validateLoginAttemp(Usuario user) {
+        if(!user.getBloqueado()){
+            user.setBloqueado(loginAttempService.hasExceedMaxAttemps(user.getUsername()));
+        }else{
+            loginAttempService.evictUserFromLoginAttempCache(user.getUsername());
+        }
+    }
+
 
     @Override
     public Usuario register(String nome, String sobrenome, String username, String email) throws UsernameExistException, UserNotFoundException {

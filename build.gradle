@@ -25,6 +25,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
 	compile group: 'com.auth0', name: 'java-jwt', version: '3.11.0'
 	compileOnly 'org.projectlombok:lombok'
+	compile group: 'com.google.guava', name: 'guava', version: '30.0-jre'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	runtimeOnly 'com.h2database:h2'
 	runtimeOnly 'mysql:mysql-connector-java'
