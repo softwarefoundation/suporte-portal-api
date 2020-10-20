@@ -26,14 +26,21 @@ import java.util.concurrent.ExecutionException;
 @Qualifier("UserDetailsService")
 public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
 
-    @Autowired
     private UsuarioRepository usuarioRepository;
-
-    @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
+    private LoginAttempService loginAttempService;
+    private EmailServiceImpl emailService;
 
     @Autowired
-    private LoginAttempService loginAttempService;
+    public UsuarioServiceImpl(UsuarioRepository usuarioRepository,
+                              BCryptPasswordEncoder bCryptPasswordEncoder,
+                              LoginAttempService loginAttempService,
+                              EmailServiceImpl emailService) {
+        this.usuarioRepository = usuarioRepository;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.loginAttempService = loginAttempService;
+        this.emailService = emailService;
+    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -79,6 +86,7 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
         usuario.setRoles(Role.ROLE_USER.name());
         usuario.setAuthorities(Role.ROLE_USER.getAuthorities());
         usuario.setUrlImagemPerfil(getTemporaryProfileImageUrl());
+        emailService.sendEmailNewPassword(usuario.getNome(),usuario.getEmail(),password);
         usuarioRepository.save(usuario);
         log.info("Senha:{}", password);
         return usuario;
