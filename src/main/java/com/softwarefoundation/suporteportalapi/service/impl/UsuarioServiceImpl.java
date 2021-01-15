@@ -70,7 +70,7 @@ public class UsuarioServiceImpl implements UsuarioService, UserDetailsService {
 
     @Override
     public Usuario register(String nome, String sobrenome, String username, String email) throws UsernameExistException, UserNotFoundException {
-        validateNewUsernameAndEmail("", nome, email);
+        validateNewUsernameAndEmail("", username, email);
         Usuario usuario = new Usuario();
         usuario.setUsuarioId(generateUserId());
         String password = generatePassword();
