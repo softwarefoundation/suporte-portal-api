@@ -39,55 +39,55 @@ public class ExceptionHandling {
 
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<HttpResponse> badCredentialsException(BadCredentialsException exception){
-        log.error(exception.getMessage());
+        log.error(exception.getMessage(), exception);
         return createHttpResponse(HttpStatus.BAD_REQUEST, INCORRECT_CREDENTIALS_MSG);
     }
 
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<HttpResponse> accessDeniedException(AccessDeniedException exception){
-        log.error(exception.getMessage());
+        log.error(exception.getMessage(), exception);
         return createHttpResponse(HttpStatus.FORBIDDEN, NOT_ENOUGH_PERMISSION_MSG);
     }
 
     @ExceptionHandler(LockedException.class)
     public ResponseEntity<HttpResponse> lockedException(LockedException exception){
-        log.error(exception.getMessage());
+        log.error(exception.getMessage(), exception);
         return createHttpResponse(HttpStatus.UNAUTHORIZED, ACCOUNT_LOCKED_MSG);
     }
 
     @ExceptionHandler(TokenExpiredException.class)
     public ResponseEntity<HttpResponse> tokenExpiredException(TokenExpiredException exception){
-        log.error(exception.getMessage());
+        log.error(exception.getMessage(), exception);
         return createHttpResponse(HttpStatus.UNAUTHORIZED, exception.getMessage());
     }
 
     @ExceptionHandler(EmailExistException.class)
     public ResponseEntity<HttpResponse> emailNotFoundException(EmailExistException exception){
-        log.error(exception.getMessage());
+        log.error(exception.getMessage(), exception);
         return createHttpResponse(HttpStatus.BAD_REQUEST, exception.getMessage());
     }
 
     @ExceptionHandler(UsernameExistException.class)
     public ResponseEntity<HttpResponse> userNameExistException(UsernameExistException exception){
-        log.error(exception.getMessage());
+        log.error(exception.getMessage(), exception);
         return createHttpResponse(HttpStatus.BAD_REQUEST, exception.getMessage());
     }
 
     @ExceptionHandler(EmailNotFoundException.class)
     public ResponseEntity<HttpResponse> emailNotFoundException(EmailNotFoundException exception){
-        log.error(exception.getMessage());
+        log.error(exception.getMessage(), exception);
         return createHttpResponse(HttpStatus.BAD_REQUEST, exception.getMessage());
     }
 
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<HttpResponse> userNotFoundException(UserNotFoundException exception){
-        log.error(exception.getMessage());
+        log.error(exception.getMessage(), exception);
         return createHttpResponse(HttpStatus.BAD_REQUEST, exception.getMessage());
     }
 
     @ExceptionHandler(NoHandlerFoundException.class)
     public ResponseEntity<HttpResponse> noHandlerFoundException(NoHandlerFoundException exception){
-        log.error(exception.getMessage());
+        log.error(exception.getMessage(), exception);
         return createHttpResponse(HttpStatus.BAD_REQUEST, PAGE_NOT_FOUND_MSG);
     }
 
@@ -99,19 +99,19 @@ public class ExceptionHandling {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<HttpResponse> internalServerException(Exception exception){
-        log.error(exception.getMessage());
+        log.error(exception.getMessage(), exception);
         return createHttpResponse(HttpStatus.INTERNAL_SERVER_ERROR, INTERNAL_SERVER_ERROR_MSG);
     }
 
     @ExceptionHandler(NoResultException.class)
     public ResponseEntity<HttpResponse> notFoundException(NoResultException exception){
-        log.error(exception.getMessage());
+        log.error(exception.getMessage(), exception);
         return createHttpResponse(HttpStatus.NOT_EXTENDED, exception.getMessage());
     }
 
     @ExceptionHandler(IOException.class)
     public ResponseEntity<HttpResponse> notFoundException(IOException exception){
-        log.error(exception.getMessage());
+        log.error(exception.getMessage(), exception);
         return createHttpResponse(HttpStatus.INTERNAL_SERVER_ERROR, ERROR_PROCESSING_FILE_MSG);
     }
 
