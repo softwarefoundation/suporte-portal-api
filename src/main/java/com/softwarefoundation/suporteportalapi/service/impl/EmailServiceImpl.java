@@ -2,6 +2,7 @@ package com.softwarefoundation.suporteportalapi.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
@@ -14,6 +15,9 @@ public class EmailServiceImpl{
     @Autowired
     private JavaMailSenderImpl emailSender;
 
+    @Value("${app.email.enviar-email-de-cadastro}")
+    private Boolean isEnviarEmailCadastro;
+
 
     /**
      *
@@ -22,6 +26,9 @@ public class EmailServiceImpl{
      * @param password
      */
     public void sendEmailNewPassword(String nome, String to, String password) {
+        if(!isEnviarEmailCadastro){
+            return;
+        }
         SimpleMailMessage message = new SimpleMailMessage();
         JavaMailSenderImpl sender = getMailSender(emailSender);
         message.setFrom(sender.getUsername());
